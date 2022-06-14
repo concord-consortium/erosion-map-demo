@@ -23,14 +23,14 @@ const CameraController = () => {
 };
 
 export const App = () => {
-  const cameraPos: [number, number, number] = [-20, 10, 10];
+  const cameraPos: [number, number, number] = [-60, 20, 10];
   return (
     <div className="canvas-container">
       <Canvas camera={{ fov: 33, position: cameraPos }}>
         <CameraController/>
-        <color attach="background" args={["blue"]}/>
-        <directionalLight color="white" position={[0, 0, 5]} />
-        <ambientLight intensity={0.1}/>
+        <color attach="background" args={["white"]}/>
+        <directionalLight color="white" position={[20, 10, 0]} />
+        <ambientLight intensity={0.15}/>
         <Terrain/>
       </Canvas>
     </div>
