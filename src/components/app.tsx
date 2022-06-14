@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Terrain } from "./terrain";
+import { Water } from "./water";
 
 import "./app.scss";
 
@@ -32,6 +33,7 @@ export const App = () => {
         <directionalLight color="white" position={[20, 10, 0]} />
         <ambientLight intensity={0.15}/>
         <Terrain/>
+        <Water/>
       </Canvas>
     </div>
   );
