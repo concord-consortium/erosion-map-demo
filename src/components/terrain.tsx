@@ -1,12 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import sand from "../assets/sand.png";
+import { renderPlane } from "./planeHelper";
+import { terrainWidth, terrainLength, gridLength, gridWidth } from "./helpers";
 import { ITransectPoint } from "../data/fake-data";
-
-const gridWidth = 3;
-const gridLength = 6;
-const terrainWidth = 40;
-const terrainLength = 14;
+import sand from "../assets/sand.png";
 
 interface TerrainProps {
   data: Array<ITransectPoint>
@@ -15,19 +12,19 @@ interface TerrainProps {
 export const Terrain = (props: TerrainProps) => {
   const {data} = props;
 
-  const terrainRef = useRef<THREE.BufferGeometry>();
+  const beachTerrainRef = useRef<THREE.BufferGeometry>();
   const rightSideRef = useRef<THREE.BufferGeometry>();
   const leftSideRef = useRef<THREE.BufferGeometry>();
   const backSideRef = useRef<THREE.BufferGeometry>();
 
-  const texture = new THREE.TextureLoader().load(sand);
+  const sandTexture = new THREE.TextureLoader().load(sand);
 
   useEffect(() => {
     setTerrainElevation();
     setSideElevation("right");
     setSideElevation("left");
     setSideElevation("back");
-  }, []);
+  });
 
 
   const getRef = (type: string) => {
@@ -35,10 +32,8 @@ export const Terrain = (props: TerrainProps) => {
       return rightSideRef;
     } else if (type === "left") {
       return leftSideRef;
-    } else if (type === "back") {
-      return backSideRef;
     } else {
-      return terrainRef;
+      return backSideRef;
     }
   };
 
@@ -68,7 +63,7 @@ export const Terrain = (props: TerrainProps) => {
   };
 
   const setTerrainElevation = () => {
-    const terrain = terrainRef.current!;
+    const terrain = beachTerrainRef.current!;
     const terrainArray = terrain.attributes.position.array as number[];
 
     for (let i = 0; i < data.length; i++){
@@ -76,33 +71,12 @@ export const Terrain = (props: TerrainProps) => {
     }
   };
 
-  const renderPlane = (type: string, meshPositions: [x: number, y: number, z: number], rotation: [x: number, y: number, z: number], args: [width?: number | undefined, height?: number | undefined, widthSegments?: number | undefined, heightSegments?: number | undefined], side?: typeof THREE.BackSide) => {
-    return (
-      <mesh
-      position={meshPositions}
-      rotation={rotation}
-      >
-        <planeBufferGeometry
-          ref={getRef(type)}
-          attach={"geometry"}
-          args={args}
-        />
-        <meshStandardMaterial
-          side={side? side : THREE.FrontSide}
-          wireframe
-          map={texture}
-        />
-      </mesh>
-    );
-  };
-
-
   return (
     <>
-      {renderPlane("terrain", [0, 0, 0], [-Math.PI / 2, 0, 0], [terrainWidth, terrainLength, gridWidth, gridLength])}
-      {renderPlane("right", [-20, 0, 0], [0, -Math.PI / 2, 0], [terrainLength, 1, gridLength])}
-      {renderPlane("left", [20, 0, 0], [0, -Math.PI / 2, 0], [terrainLength, 1, gridLength], THREE.BackSide)}
-      {renderPlane("back", [0, 0, -7], [0, 0, 0], [terrainWidth, 1, gridWidth], THREE.BackSide)}
+      {renderPlane([0, 0, 0], [-Math.PI / 2, 0, 0], [terrainWidth, terrainLength, gridWidth, gridLength], sandTexture, beachTerrainRef)}
+      {renderPlane([-terrainWidth / 2, 0, 0], [0, -Math.PI / 2, 0], [terrainLength, 1, gridLength], sandTexture, rightSideRef)}
+      {renderPlane([terrainWidth / 2, 0, 0], [0, -Math.PI / 2, 0], [terrainLength, 1, gridLength], sandTexture, leftSideRef, THREE.BackSide)}
+      {renderPlane([0, 0, -terrainLength / 2], [0, 0, 0], [terrainWidth, 1, gridWidth], sandTexture, backSideRef, THREE.BackSide)}
     </>
   );
 };
