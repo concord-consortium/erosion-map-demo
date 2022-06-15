@@ -1,11 +1,7 @@
-interface ITransectPoint {
+export interface ITransectPoint {
   x: number,
   y: number,
   z: number
-}
-
-interface ITransect {
-  [index: number]: ITransectPoint
 }
 
 const getRandomValue = (min: number, max: number) => {
@@ -17,21 +13,21 @@ const getRandomZIndex = () => {
 };
 
 const xValues = [-40, -20, 0, 20];
-const yValues = [-6, -4, -2, 0, 2, 4, 6];
-const zValues = Array.from(Array(7), (el) => el = getRandomValue(.5, 2));
+const yValues = [6, 4, 2, 0, -2, -4, -6];
+const zValues = Array.from(Array(7), (el) => el = getRandomValue(.1, 2));
 
 const createFakeData = () => {
-  const aggregatedData: Array<ITransect> = [{}, {}, {}, {}];
+  const aggregatedData: Array<ITransectPoint> = [];
 
-  aggregatedData.forEach((el, idx) => {
-    for (let j = 0; j < 7; j++){
-      el[j] = {
-        x: xValues[idx],
-        y: yValues[j],
+  for (let i = 0; i < yValues.length; i++){
+    for (let j = 0; j < xValues.length; j++){
+      aggregatedData.push({
+        x: xValues[j],
+        y: yValues[i],
         z: zValues[getRandomZIndex()]
-      };
+      });
     }
-  });
+  }
 
   return aggregatedData;
 };
